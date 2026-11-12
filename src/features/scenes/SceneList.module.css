@@ -15,6 +15,11 @@
   background: var(--surface);
 }
 
+.selected {
+  border-color: var(--thermal);
+  box-shadow: 0 0 0 1px var(--thermal);
+}
+
 .preview {
   display: block;
   width: 100%;
@@ -56,4 +61,27 @@
 .link {
   color: var(--thermal);
   font-weight: 500;
+}
+
+.select {
+  align-self: flex-start;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--frost);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.select:hover {
+  border-color: var(--thermal);
+}
+
+.select[aria-pressed="true"] {
+  border-color: var(--thermal);
+  background: var(--thermal);
+  color: var(--ink);
 }

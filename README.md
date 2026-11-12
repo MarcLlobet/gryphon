@@ -22,7 +22,9 @@ delivers thermal infrared data from the Hydra constellation. Like ALEX, Gryphon 
 - [x] Searches the public **Landsat Collection 2 Level-2** archive (surface temperature band)
       through Microsoft Planetary Computer's STAC API.
 - [x] Lists the latest low-cloud thermal scenes over an area (Barcelona by default).
-- [ ] Renders the thermal band on a map with thermal palettes and per-pixel °C readout.
+- [x] Paints the selected scene's thermal band on a MapLibre map (0–50 °C, `inferno` palette),
+      with a legend and an opacity control.
+- [ ] Per-pixel °C readout on hover.
 - [ ] Overlays active fire hotspots from NASA FIRMS.
 - [ ] Propagates real satellite orbits (CelesTrak TLEs) and predicts the next pass over an area.
 - [ ] Simulates a STAPI-style tasking request: draw an area, pick a window, get a feasibility study.
@@ -31,37 +33,42 @@ delivers thermal infrared data from the Hydra constellation. Like ALEX, Gryphon 
 
 ```
 Browser ── React Query ──▶ /api/* (Next.js route handlers, BFF) ──▶ STAC APIs
-                                     ▲
-                       MSW (typed mocks) in tests & `pnpm dev:mock`
+   │                                 ▲
+   │                   MSW (typed mocks) in tests & `pnpm dev:mock`
+   └── MapLibre ──▶ Planetary Computer tiler (thermal band rendered as XYZ tiles)
 ```
 
 - The browser only talks to Gryphon's own route handlers. They validate input, call upstream
   APIs (keeping keys server-side) and map raw STAC items to a small domain model (`ThermalScene`).
 - **MSW** intercepts the server's outbound requests, so the same typed fixtures power unit tests
-  and fully offline local development — no service worker file needed.
+  and local development without hitting the catalog — no service worker file needed.
+- The **map** asks Planetary Computer's tiler for the `lwir11` (surface temperature) asset,
+  rescaled from Landsat's scaled integers to 0–50 °C. MapLibre logic lives in small pure
+  functions (`thermalLayer.ts`), so it is unit-tested without WebGL.
 
 ## Stack
 
-TypeScript · React 19 · Next.js (App Router) · TanStack React Query · MSW · Vite + Vitest ·
-Testing Library · [ts-only](https://github.com/MarcLlobet/ts-only) · Husky + lint-staged · pnpm
+TypeScript · React 19 · Next.js (App Router) · TanStack React Query · MapLibre GL · MSW ·
+Vite + Vitest · Testing Library · Husky + lint-staged · pnpm
 
 ## Getting started
 
 ```bash
 pnpm install
 pnpm dev        # real APIs
-pnpm dev:mock   # offline, MSW-mocked APIs
+pnpm dev:mock   # MSW-mocked catalog (map tiles still need the network)
 ```
 
 | Script | What it does |
 | --- | --- |
 | `pnpm test` | Unit tests (`*.test.ts` / `*.test.tsx`) with Vitest |
-| `pnpm test:coverage` | Tests with V8 coverage (written to `dist/coverage`) |
+| `pnpm test:coverage` | Tests with V8 coverage (written to `coverage/`) |
 | `pnpm typecheck` | Generates Next.js types, then runs `tsc` |
-| `pnpm ts-only` | Fails if any `.js` / `.jsx` file sneaks into the repo |
 
-The pre-commit hook runs `ts-only`, the tests related to staged files, and the type check.
-Next.js builds to `dist/` so generated JavaScript never trips `ts-only`.
+The pre-commit hook runs the tests related to staged files and the type check.
+
+Basemap © [CARTO](https://carto.com/attributions) · © OpenStreetMap contributors.
+Thermal data: Landsat Collection 2 Level-2 © USGS, served by Microsoft Planetary Computer.
 
 ## License
 

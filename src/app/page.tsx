@@ -1,5 +1,5 @@
-import { SceneList } from "@/features/scenes/SceneList";
 import { GryphonEmblem } from "@/components/GryphonEmblem";
+import { Explorer } from "@/features/explorer/Explorer";
 import { DEFAULT_BBOX } from "@/lib/geo/bbox";
 import styles from "./page.module.css";
 
@@ -20,12 +20,7 @@ export default function HomePage() {
         archives through STAC, the same standard behind ALEX.
       </p>
 
-      <section aria-labelledby="scenes-title">
-        <h2 id="scenes-title" className={styles.sectionTitle}>
-          Latest thermal scenes · Barcelona
-        </h2>
-        <SceneList bbox={DEFAULT_BBOX} />
-      </section>
+      <Explorer bbox={DEFAULT_BBOX} areaName="Barcelona" />
     </main>
   );
 }

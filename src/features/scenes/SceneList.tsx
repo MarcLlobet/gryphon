@@ -17,8 +17,17 @@ const formatAcquiredAt = (value: string | null): string =>
 const formatCloudCover = (value: number | null): string =>
   value === null ? "—" : `${value.toFixed(1)}%`;
 
-const SceneCard = ({ scene }: { scene: ThermalScene }) => (
-  <article className={styles.card} aria-labelledby={`scene-${scene.id}`}>
+interface SceneCardProps {
+  scene: ThermalScene;
+  isSelected: boolean;
+  onSelect?: (sceneId: string) => void;
+}
+
+const SceneCard = ({ scene, isSelected, onSelect }: SceneCardProps) => (
+  <article
+    className={isSelected ? `${styles.card} ${styles.selected}` : styles.card}
+    aria-labelledby={`scene-${scene.id}`}
+  >
     {scene.previewHref && (
       <img
         className={styles.preview}
@@ -44,11 +53,27 @@ const SceneCard = ({ scene }: { scene: ThermalScene }) => (
           Thermal band (LWIR)
         </a>
       )}
+      {onSelect && (
+        <button
+          type="button"
+          className={styles.select}
+          aria-pressed={isSelected}
+          onClick={() => onSelect(scene.id)}
+        >
+          Show on map
+        </button>
+      )}
     </div>
   </article>
 );
 
-export const SceneList = ({ bbox }: { bbox: BBox }) => {
+interface SceneListProps {
+  bbox: BBox;
+  selectedId?: string | null;
+  onSelect?: (sceneId: string) => void;
+}
+
+export const SceneList = ({ bbox, selectedId = null, onSelect }: SceneListProps) => {
   const { data, isPending, isError, error } = useScenes(bbox);
 
   if (isPending) {
@@ -67,7 +92,7 @@ export const SceneList = ({ bbox }: { bbox: BBox }) => {
     <ul className={styles.list} aria-label="Thermal scenes">
       {data.map((scene) => (
         <li key={scene.id}>
-          <SceneCard scene={scene} />
+          <SceneCard scene={scene} isSelected={scene.id === selectedId} onSelect={onSelect} />
         </li>
       ))}
     </ul>

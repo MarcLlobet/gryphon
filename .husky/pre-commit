@@ -1,0 +1,3 @@
+pnpm exec ts-only
+pnpm exec lint-staged
+pnpm typecheck

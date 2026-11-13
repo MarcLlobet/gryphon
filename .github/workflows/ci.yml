@@ -15,7 +15,8 @@ permissions:
 env:
   # GitHub Pages serves the project at /gryphon.
   NEXT_PUBLIC_BASE_PATH: /gryphon
-  NEXT_PUBLIC_SITE_URL: https://marcllobet.github.io
+  # Includes the base path, so absolute URLs (the link preview image) land under /gryphon.
+  NEXT_PUBLIC_SITE_URL: https://marcllobet.github.io/gryphon
 
 jobs:
   check:

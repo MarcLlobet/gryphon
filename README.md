@@ -10,6 +10,26 @@
   <a href="https://github.com/MarcLlobet/gryphon/actions/workflows/ci.yml"><img src="https://github.com/MarcLlobet/gryphon/actions/workflows/ci.yml/badge.svg" alt="CI status" /></a>
 </p>
 
+<p align="center">
+  <img src="docs/screenshots/surface-temperature-barcelona.webp" alt="Gryphon showing Landsat surface temperature over Barcelona: the city and the coast glow orange, the Collserola hills stay purple" width="900" />
+</p>
+
+---
+
+## In plain words
+
+Satellites measure how hot the ground is, where it rains, how green the fields are. Gryphon
+puts that open data on a map anyone can open in a browser: no account, no install, no code.
+
+Above, the ground temperature over Barcelona: **orange is hotter, purple is cooler**. The city
+glows while the Collserola hills stay cool, an urban heat island you can see at a glance.
+
+![Rainfall and recent earthquakes over Europe](docs/screenshots/precipitation-and-earthquakes.webp)
+
+Layers stack: here, today's rainfall with the past day's earthquakes (orange dots).
+[Open the live demo](https://marcllobet.github.io/gryphon/), switch layers on and off in the
+side panel, or add your own from the settings page.
+
 ---
 
 ## Why "Gryphon"?

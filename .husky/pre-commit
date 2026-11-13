@@ -1,2 +1,2 @@
+# Fast, staged files only: lint and format them, and run the tests they touch.
 pnpm exec lint-staged
-pnpm typecheck

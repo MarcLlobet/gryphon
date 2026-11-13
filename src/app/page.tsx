@@ -1,26 +1,36 @@
-import { GryphonEmblem } from "@/components/GryphonEmblem";
-import { Explorer } from "@/features/explorer/Explorer";
-import { DEFAULT_BBOX } from "@/lib/geo/bbox";
-import styles from "./page.module.css";
+import { AppHeader, SettingsLink } from "@/components/AppHeader";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { BootProvider } from "@/features/boot/BootProvider";
+import { MapView } from "@/features/explorer/MapView";
+import { Intro } from "@/features/intro/Intro";
+import { ThemeToggle } from "@/features/theme/ThemeToggle";
+import { PanelProvider, PanelToggle } from "@/features/layout/panel";
+import styles from "./map.module.css";
 
 export default function HomePage() {
   return (
-    <main className={styles.main}>
-      <header className={styles.header}>
-        <GryphonEmblem size={88} />
-        <div>
-          <p className={styles.eyebrow}>THERMAL EARTH EXPLORER</p>
-          <h1 className={styles.title}>GRYPHON</h1>
-        </div>
-      </header>
-
-      <p className={styles.intro}>
-        In the Alexander Romance, two griffins carried Alexander into the sky so he could look down on
-        the Earth — the first Earth observation mission. Gryphon searches open thermal infrared
-        archives through STAC, the same standard behind ALEX.
-      </p>
-
-      <Explorer bbox={DEFAULT_BBOX} areaName="Barcelona" />
-    </main>
+    <BootProvider>
+      <PanelProvider>
+        <main className={styles.shell}>
+          <div className={styles.header}>
+            <AppHeader
+              leading={<PanelToggle />}
+              action={
+                <>
+                  <ThemeToggle />
+                  <SettingsLink />
+                </>
+              }
+            />
+          </div>
+          <MapView />
+        </main>
+      </PanelProvider>
+      {/* Rendered after the map so the map starts loading underneath it at once.
+          If the intro itself breaks, it simply disappears: it must never block the map. */}
+      <ErrorBoundary fallback={() => null}>
+        <Intro />
+      </ErrorBoundary>
+    </BootProvider>
   );
 }

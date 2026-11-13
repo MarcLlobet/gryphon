@@ -1,32 +1,34 @@
+import { useId } from "react";
+import { GryphonHead } from "./GryphonHead";
+
 interface GryphonEmblemProps {
   size?: number;
   title?: string;
 }
 
-/** The Gryphon mission-patch emblem: griffin head, wings and an orbit. */
-export const GryphonEmblem = ({ size = 96, title = "Gryphon" }: GryphonEmblemProps) => (
-  <svg viewBox="0 0 200 200" width={size} height={size} role="img" aria-label={title}>
-    <circle cx="100" cy="100" r="96" fill="var(--ink)" stroke="var(--frost)" strokeWidth="3" />
-    <circle cx="100" cy="100" r="86" fill="none" stroke="var(--frost)" strokeOpacity="0.25" />
-    <ellipse
-      cx="100"
-      cy="104"
-      rx="90"
-      ry="28"
-      transform="rotate(-18 100 104)"
-      fill="none"
-      stroke="var(--thermal)"
-      strokeWidth="2.5"
-    />
-    <path d="M66 132 L20 104 L27 96 L72 122 Z" fill="var(--frost)" />
-    <path d="M64 118 L25 82 L32 75 L70 108 Z" fill="var(--frost)" />
-    <path d="M66 104 L36 64 L44 59 L70 94 Z" fill="var(--frost)" />
-    <path
-      d="M60 160 L70 95 L52 58 L88 78 L82 46 L110 70 L150 74 L172 92 L168 120 L156 106 L146 112 L132 112 L122 160 Z"
-      fill="var(--frost)"
-    />
-    <path d="M78 128 L100 112 M82 146 L108 128" stroke="var(--ink)" strokeWidth="4" fill="none" />
-    <path d="M126 86 L138 82 L142 92 L130 94 Z" fill="var(--thermal)" />
-    <circle cx="183" cy="87" r="5" fill="var(--frost)" stroke="var(--thermal)" strokeWidth="2" />
-  </svg>
-);
+/** The compact mark: the griffin head cropped by a disc. Used in the header. */
+export const GryphonEmblem = ({ size = 96, title = "Gryphon" }: GryphonEmblemProps) => {
+  const clipId = `emblem${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
+  return (
+    <svg
+      viewBox="0 0 200 200"
+      width={size}
+      height={size}
+      {...(title === "" ? { "aria-hidden": true } : { role: "img", "aria-label": title })}
+    >
+      <defs>
+        <clipPath id={clipId}>
+          <circle cx="100" cy="100" r="96" />
+        </clipPath>
+      </defs>
+      <circle cx="100" cy="100" r="96" fill="var(--ink-2)" stroke="var(--line)" strokeWidth="3" />
+      <g clipPath={`url(#${clipId})`}>
+        <g transform="translate(96 104) scale(0.96) translate(-100 -100)">
+          {/* currentColor: the head takes the colour of the link it sits in, so it
+              turns orange with the wordmark on hover. */}
+          <GryphonHead body="currentColor" detail="var(--ink-2)" compact={size < 72} />
+        </g>
+      </g>
+    </svg>
+  );
+};

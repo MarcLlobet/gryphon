@@ -1,8 +1,19 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { useState, type ReactNode } from "react";
+import dynamic from "next/dynamic";
+import { useState, type ComponentType, type ReactNode } from "react";
+import { ConfigProvider } from "@/features/config/ConfigProvider";
+import { ThemeProvider } from "@/features/theme/ThemeProvider";
+import { Mocking } from "./mocking";
+
+/** A development aid: never part of a production bundle. */
+const Devtools: ComponentType<{ initialIsOpen?: boolean }> =
+  process.env.NODE_ENV === "development"
+    ? dynamic(() => import("@tanstack/react-query-devtools").then((module) => module.ReactQueryDevtools), {
+        ssr: false,
+      })
+    : () => null;
 
 export const createQueryClient = (): QueryClient =>
   new QueryClient({
@@ -20,8 +31,12 @@ export const Providers = ({ children }: { children: ReactNode }) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
-      <ReactQueryDevtools initialIsOpen={false} />
+      <ThemeProvider>
+        <Mocking>
+          <ConfigProvider>{children}</ConfigProvider>
+        </Mocking>
+      </ThemeProvider>
+      <Devtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 };

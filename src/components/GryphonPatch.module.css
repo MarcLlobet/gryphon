@@ -1,0 +1,7 @@
+.top {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 5px;
+  fill: var(--frost);
+}

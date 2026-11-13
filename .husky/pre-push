@@ -1,0 +1,5 @@
+# Whole project, before anything leaves the machine: the same checks CI runs first.
+pnpm lint
+pnpm format:check
+pnpm typecheck
+pnpm test

@@ -1,0 +1,1704 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "type": "number",
+      "const": 1
+    },
+    "title": {
+      "type": "string"
+    },
+    "basemap": {
+      "default": "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
+      "type": "string",
+      "format": "uri"
+    },
+    "view": {
+      "type": "object",
+      "properties": {
+        "bbox": {
+          "readOnly": true,
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "items": false,
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "zoom": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 24
+        }
+      }
+    },
+    "layers": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1
+              },
+              "attribution": {
+                "type": "string"
+              },
+              "visible": {
+                "default": true,
+                "type": "boolean"
+              },
+              "opacity": {
+                "default": 1,
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "legend": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "ramp"
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
+                      "min": {
+                        "type": "number"
+                      },
+                      "max": {
+                        "type": "number"
+                      },
+                      "colors": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "description": "A CSS colour, e.g. #fca50a"
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "min",
+                      "max",
+                      "colors"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "categories"
+                      },
+                      "items": {
+                        "minItems": 1,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "label": {
+                              "type": "string"
+                            },
+                            "color": {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "A CSS colour, e.g. #fca50a"
+                            }
+                          },
+                          "required": [
+                            "label",
+                            "color"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "items"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "scaled-circle"
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
+                      "color": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "A CSS colour, e.g. #fca50a"
+                      },
+                      "stops": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "number"
+                            },
+                            "radius": {
+                              "type": "number",
+                              "exclusiveMinimum": 0
+                            }
+                          },
+                          "required": [
+                            "value",
+                            "radius"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "color",
+                      "stops"
+                    ]
+                  }
+                ]
+              },
+              "auth": {
+                "type": "object",
+                "properties": {
+                  "in": {
+                    "type": "string",
+                    "enum": [
+                      "query",
+                      "header"
+                    ],
+                    "description": "Where to put the secret on the request"
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Query parameter or header name, e.g. MAP_KEY"
+                  }
+                },
+                "required": [
+                  "in",
+                  "name"
+                ]
+              },
+              "proxy": {
+                "type": "string",
+                "format": "uri"
+              },
+              "preload": {
+                "default": false,
+                "type": "boolean"
+              },
+              "icon": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "type": {
+                "type": "string",
+                "const": "geojson"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "data": {},
+              "sourceOf": {
+                "type": "string",
+                "minLength": 1
+              },
+              "draw": {
+                "default": "circle",
+                "type": "string",
+                "enum": [
+                  "circle",
+                  "line",
+                  "fill",
+                  "heatmap",
+                  "symbol"
+                ]
+              },
+              "style": {
+                "default": {},
+                "type": "object",
+                "properties": {
+                  "color": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "A CSS colour, e.g. #fca50a"
+                  },
+                  "colorBy": {
+                    "type": "object",
+                    "properties": {
+                      "property": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "stops": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "A CSS colour, e.g. #fca50a"
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 2,
+                          "maxItems": 2
+                        }
+                      }
+                    },
+                    "required": [
+                      "property",
+                      "stops"
+                    ]
+                  },
+                  "radius": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "radiusBy": {
+                    "type": "object",
+                    "properties": {
+                      "property": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "stops": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "number",
+                              "exclusiveMinimum": 0
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 2,
+                          "maxItems": 2
+                        }
+                      }
+                    },
+                    "required": [
+                      "property",
+                      "stops"
+                    ]
+                  },
+                  "width": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "paint": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {}
+                  }
+                }
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1
+              },
+              "attribution": {
+                "type": "string"
+              },
+              "visible": {
+                "default": true,
+                "type": "boolean"
+              },
+              "opacity": {
+                "default": 1,
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "legend": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "ramp"
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
+                      "min": {
+                        "type": "number"
+                      },
+                      "max": {
+                        "type": "number"
+                      },
+                      "colors": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "description": "A CSS colour, e.g. #fca50a"
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "min",
+                      "max",
+                      "colors"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "categories"
+                      },
+                      "items": {
+                        "minItems": 1,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "label": {
+                              "type": "string"
+                            },
+                            "color": {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "A CSS colour, e.g. #fca50a"
+                            }
+                          },
+                          "required": [
+                            "label",
+                            "color"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "items"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "scaled-circle"
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
+                      "color": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "A CSS colour, e.g. #fca50a"
+                      },
+                      "stops": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "number"
+                            },
+                            "radius": {
+                              "type": "number",
+                              "exclusiveMinimum": 0
+                            }
+                          },
+                          "required": [
+                            "value",
+                            "radius"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "color",
+                      "stops"
+                    ]
+                  }
+                ]
+              },
+              "auth": {
+                "type": "object",
+                "properties": {
+                  "in": {
+                    "type": "string",
+                    "enum": [
+                      "query",
+                      "header"
+                    ],
+                    "description": "Where to put the secret on the request"
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Query parameter or header name, e.g. MAP_KEY"
+                  }
+                },
+                "required": [
+                  "in",
+                  "name"
+                ]
+              },
+              "proxy": {
+                "type": "string",
+                "format": "uri"
+              },
+              "preload": {
+                "default": false,
+                "type": "boolean"
+              },
+              "icon": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "minzoom": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 24
+              },
+              "maxzoom": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 24
+              },
+              "type": {
+                "type": "string",
+                "const": "raster"
+              },
+              "tiles": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "tileSize": {
+                "default": 256,
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 9007199254740991
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "type",
+              "tiles"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1
+              },
+              "attribution": {
+                "type": "string"
+              },
+              "visible": {
+                "default": true,
+                "type": "boolean"
+              },
+              "opacity": {
+                "default": 1,
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "legend": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "ramp"
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
+                      "min": {
+                        "type": "number"
+                      },
+                      "max": {
+                        "type": "number"
+                      },
+                      "colors": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "description": "A CSS colour, e.g. #fca50a"
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "min",
+                      "max",
+                      "colors"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "categories"
+                      },
+                      "items": {
+                        "minItems": 1,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "label": {
+                              "type": "string"
+                            },
+                            "color": {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "A CSS colour, e.g. #fca50a"
+                            }
+                          },
+                          "required": [
+                            "label",
+                            "color"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "items"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "scaled-circle"
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
+                      "color": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "A CSS colour, e.g. #fca50a"
+                      },
+                      "stops": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "number"
+                            },
+                            "radius": {
+                              "type": "number",
+                              "exclusiveMinimum": 0
+                            }
+                          },
+                          "required": [
+                            "value",
+                            "radius"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "color",
+                      "stops"
+                    ]
+                  }
+                ]
+              },
+              "auth": {
+                "type": "object",
+                "properties": {
+                  "in": {
+                    "type": "string",
+                    "enum": [
+                      "query",
+                      "header"
+                    ],
+                    "description": "Where to put the secret on the request"
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Query parameter or header name, e.g. MAP_KEY"
+                  }
+                },
+                "required": [
+                  "in",
+                  "name"
+                ]
+              },
+              "proxy": {
+                "type": "string",
+                "format": "uri"
+              },
+              "preload": {
+                "default": false,
+                "type": "boolean"
+              },
+              "icon": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "type": {
+                "type": "string",
+                "const": "image"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "coordinates": {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ],
+                    "items": false,
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ],
+                    "items": false,
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ],
+                    "items": false,
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  {
+                    "type": "array",
+                    "prefixItems": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ],
+                    "items": false,
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                ],
+                "items": false,
+                "minItems": 4,
+                "maxItems": 4,
+                "description": "[top-left, top-right, bottom-right, bottom-left] as [lng, lat]"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "type",
+              "url",
+              "coordinates"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1
+              },
+              "attribution": {
+                "type": "string"
+              },
+              "visible": {
+                "default": true,
+                "type": "boolean"
+              },
+              "opacity": {
+                "default": 1,
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "legend": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "ramp"
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
+                      "min": {
+                        "type": "number"
+                      },
+                      "max": {
+                        "type": "number"
+                      },
+                      "colors": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "description": "A CSS colour, e.g. #fca50a"
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "min",
+                      "max",
+                      "colors"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "categories"
+                      },
+                      "items": {
+                        "minItems": 1,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "label": {
+                              "type": "string"
+                            },
+                            "color": {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "A CSS colour, e.g. #fca50a"
+                            }
+                          },
+                          "required": [
+                            "label",
+                            "color"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "items"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "scaled-circle"
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
+                      "color": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "A CSS colour, e.g. #fca50a"
+                      },
+                      "stops": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "number"
+                            },
+                            "radius": {
+                              "type": "number",
+                              "exclusiveMinimum": 0
+                            }
+                          },
+                          "required": [
+                            "value",
+                            "radius"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "color",
+                      "stops"
+                    ]
+                  }
+                ]
+              },
+              "auth": {
+                "type": "object",
+                "properties": {
+                  "in": {
+                    "type": "string",
+                    "enum": [
+                      "query",
+                      "header"
+                    ],
+                    "description": "Where to put the secret on the request"
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Query parameter or header name, e.g. MAP_KEY"
+                  }
+                },
+                "required": [
+                  "in",
+                  "name"
+                ]
+              },
+              "proxy": {
+                "type": "string",
+                "format": "uri"
+              },
+              "preload": {
+                "default": false,
+                "type": "boolean"
+              },
+              "icon": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "minzoom": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 24
+              },
+              "maxzoom": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 24
+              },
+              "type": {
+                "type": "string",
+                "const": "vector"
+              },
+              "tiles": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "sourceLayer": {
+                "type": "string",
+                "minLength": 1
+              },
+              "draw": {
+                "default": "fill",
+                "type": "string",
+                "enum": [
+                  "circle",
+                  "line",
+                  "fill",
+                  "heatmap",
+                  "symbol"
+                ]
+              },
+              "style": {
+                "default": {},
+                "type": "object",
+                "properties": {
+                  "color": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "A CSS colour, e.g. #fca50a"
+                  },
+                  "colorBy": {
+                    "type": "object",
+                    "properties": {
+                      "property": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "stops": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "A CSS colour, e.g. #fca50a"
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 2,
+                          "maxItems": 2
+                        }
+                      }
+                    },
+                    "required": [
+                      "property",
+                      "stops"
+                    ]
+                  },
+                  "radius": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "radiusBy": {
+                    "type": "object",
+                    "properties": {
+                      "property": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "stops": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "number",
+                              "exclusiveMinimum": 0
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 2,
+                          "maxItems": 2
+                        }
+                      }
+                    },
+                    "required": [
+                      "property",
+                      "stops"
+                    ]
+                  },
+                  "width": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "paint": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {}
+                  }
+                }
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "type",
+              "tiles",
+              "sourceLayer"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1
+              },
+              "attribution": {
+                "type": "string"
+              },
+              "visible": {
+                "default": true,
+                "type": "boolean"
+              },
+              "opacity": {
+                "default": 1,
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "legend": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "ramp"
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
+                      "min": {
+                        "type": "number"
+                      },
+                      "max": {
+                        "type": "number"
+                      },
+                      "colors": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "description": "A CSS colour, e.g. #fca50a"
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "min",
+                      "max",
+                      "colors"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "categories"
+                      },
+                      "items": {
+                        "minItems": 1,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "label": {
+                              "type": "string"
+                            },
+                            "color": {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "A CSS colour, e.g. #fca50a"
+                            }
+                          },
+                          "required": [
+                            "label",
+                            "color"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "items"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "scaled-circle"
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
+                      "color": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "A CSS colour, e.g. #fca50a"
+                      },
+                      "stops": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "number"
+                            },
+                            "radius": {
+                              "type": "number",
+                              "exclusiveMinimum": 0
+                            }
+                          },
+                          "required": [
+                            "value",
+                            "radius"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "color",
+                      "stops"
+                    ]
+                  }
+                ]
+              },
+              "auth": {
+                "type": "object",
+                "properties": {
+                  "in": {
+                    "type": "string",
+                    "enum": [
+                      "query",
+                      "header"
+                    ],
+                    "description": "Where to put the secret on the request"
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Query parameter or header name, e.g. MAP_KEY"
+                  }
+                },
+                "required": [
+                  "in",
+                  "name"
+                ]
+              },
+              "proxy": {
+                "type": "string",
+                "format": "uri"
+              },
+              "preload": {
+                "default": false,
+                "type": "boolean"
+              },
+              "icon": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "type": {
+                "type": "string",
+                "const": "csv"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "lat": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Latitude column name"
+              },
+              "lon": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Longitude column name"
+              },
+              "draw": {
+                "default": "circle",
+                "type": "string",
+                "enum": [
+                  "circle",
+                  "line",
+                  "fill",
+                  "heatmap",
+                  "symbol"
+                ]
+              },
+              "style": {
+                "default": {},
+                "type": "object",
+                "properties": {
+                  "color": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "A CSS colour, e.g. #fca50a"
+                  },
+                  "colorBy": {
+                    "type": "object",
+                    "properties": {
+                      "property": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "stops": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "A CSS colour, e.g. #fca50a"
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 2,
+                          "maxItems": 2
+                        }
+                      }
+                    },
+                    "required": [
+                      "property",
+                      "stops"
+                    ]
+                  },
+                  "radius": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "radiusBy": {
+                    "type": "object",
+                    "properties": {
+                      "property": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "stops": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "number",
+                              "exclusiveMinimum": 0
+                            }
+                          ],
+                          "items": false,
+                          "minItems": 2,
+                          "maxItems": 2
+                        }
+                      }
+                    },
+                    "required": [
+                      "property",
+                      "stops"
+                    ]
+                  },
+                  "width": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "paint": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string"
+                    },
+                    "additionalProperties": {}
+                  }
+                }
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "type",
+              "url",
+              "lat",
+              "lon"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1
+              },
+              "attribution": {
+                "type": "string"
+              },
+              "visible": {
+                "default": true,
+                "type": "boolean"
+              },
+              "opacity": {
+                "default": 1,
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "legend": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "ramp"
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
+                      "min": {
+                        "type": "number"
+                      },
+                      "max": {
+                        "type": "number"
+                      },
+                      "colors": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1,
+                          "description": "A CSS colour, e.g. #fca50a"
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "min",
+                      "max",
+                      "colors"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "categories"
+                      },
+                      "items": {
+                        "minItems": 1,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "label": {
+                              "type": "string"
+                            },
+                            "color": {
+                              "type": "string",
+                              "minLength": 1,
+                              "description": "A CSS colour, e.g. #fca50a"
+                            }
+                          },
+                          "required": [
+                            "label",
+                            "color"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "items"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "scaled-circle"
+                      },
+                      "unit": {
+                        "type": "string"
+                      },
+                      "color": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "A CSS colour, e.g. #fca50a"
+                      },
+                      "stops": {
+                        "minItems": 2,
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "value": {
+                              "type": "number"
+                            },
+                            "radius": {
+                              "type": "number",
+                              "exclusiveMinimum": 0
+                            }
+                          },
+                          "required": [
+                            "value",
+                            "radius"
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "color",
+                      "stops"
+                    ]
+                  }
+                ]
+              },
+              "auth": {
+                "type": "object",
+                "properties": {
+                  "in": {
+                    "type": "string",
+                    "enum": [
+                      "query",
+                      "header"
+                    ],
+                    "description": "Where to put the secret on the request"
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Query parameter or header name, e.g. MAP_KEY"
+                  }
+                },
+                "required": [
+                  "in",
+                  "name"
+                ]
+              },
+              "proxy": {
+                "type": "string",
+                "format": "uri"
+              },
+              "preload": {
+                "default": false,
+                "type": "boolean"
+              },
+              "icon": {
+                "type": "string",
+                "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+              },
+              "type": {
+                "type": "string",
+                "const": "stac"
+              },
+              "endpoint": {
+                "type": "string",
+                "format": "uri",
+                "description": "STAC API root, e.g. https://planetarycomputer.microsoft.com/api/stac/v1"
+              },
+              "tiler": {
+                "type": "string",
+                "format": "uri",
+                "description": "TiTiler root that renders the collection's COGs"
+              },
+              "collection": {
+                "type": "string",
+                "minLength": 1
+              },
+              "render": {
+                "type": "object",
+                "properties": {
+                  "assets": {
+                    "minItems": 1,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "colormap_name": {
+                    "type": "string"
+                  },
+                  "rescale": {
+                    "type": "array",
+                    "items": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ],
+                      "items": false,
+                      "minItems": 2,
+                      "maxItems": 2
+                    }
+                  },
+                  "nodata": {
+                    "type": [
+                      "number",
+                      "string"
+                    ]
+                  }
+                },
+                "required": [
+                  "assets"
+                ]
+              },
+              "bbox": {
+                "description": "Search area; defaults to the document's view",
+                "readOnly": true,
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "items": false,
+                "minItems": 4,
+                "maxItems": 4
+              },
+              "limit": {
+                "default": 12,
+                "type": "integer",
+                "exclusiveMinimum": 0,
+                "maximum": 100
+              },
+              "maxCloudCover": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "footprints": {
+                "default": false,
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "type",
+              "endpoint",
+              "tiler",
+              "collection",
+              "render"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "version"
+  ]
+}

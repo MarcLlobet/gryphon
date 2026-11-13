@@ -1,0 +1,364 @@
+.stack {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0 8px 6px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  /* Grip, toggle and legend button on one line; the legend panel spans beneath. */
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: stretch;
+  gap: 2px;
+  border-radius: 9px;
+  position: relative;
+}
+
+.row[data-dragging] {
+  opacity: 0.45;
+}
+
+/* An enabled layer is marked by a standing accent rail, never by hover: which
+   layers are on has to be readable at a glance, across the whole list. */
+.row[data-active]::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--thermal);
+}
+
+.row[data-active] .index {
+  color: var(--thermal);
+}
+
+/* A line showing exactly where the row will land, on the side it will land. */
+.row[data-drop="above"]::before,
+.row[data-drop="below"]::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--thermal);
+}
+
+.row[data-drop="above"]::before {
+  top: -2px;
+}
+
+.row[data-drop="below"]::after {
+  bottom: -2px;
+}
+
+/* The number and the handle occupy the same cell and cross-fade. */
+.handle {
+  display: grid;
+  place-items: center;
+  width: 24px;
+}
+
+.handle > * {
+  grid-area: 1 / 1;
+  transition: opacity 120ms ease;
+}
+
+.index {
+  font-size: 0.74rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.grip {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 26px;
+  border: 0;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--frost) 8%, transparent);
+  color: color-mix(in srgb, var(--frost) 70%, transparent);
+  cursor: grab;
+  opacity: 0;
+  /* Without this a finger drag scrolls the list instead of moving the row. */
+  touch-action: none;
+}
+
+/* `focus-within` matters as much as `hover`: tabbing to the handle has to reveal it,
+   or a keyboard user focuses something invisible. */
+.row:hover .grip,
+.row:focus-within .grip {
+  opacity: 1;
+}
+
+.row:hover .index,
+.row:focus-within .index {
+  opacity: 0;
+}
+
+/* Touch has no hover, so there the handle is simply always the one on show. */
+@media (hover: none) {
+  .index {
+    opacity: 0;
+  }
+  .grip {
+    opacity: 1;
+  }
+}
+
+.grip:hover {
+  color: var(--thermal);
+  background: color-mix(in srgb, var(--thermal) 18%, transparent);
+}
+
+.grip:active {
+  cursor: grabbing;
+}
+
+.toggle {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex: 1;
+  min-width: 0;
+  /* Comfortable target for touch without a chunky desktop row. */
+  min-height: 40px;
+  padding: 0 10px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--frost);
+  font: inherit;
+  font-size: 0.82rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.toggle:hover {
+  background: color-mix(in srgb, var(--frost) 8%, transparent);
+}
+
+.grip:focus-visible,
+.legendToggle:focus-visible,
+.toggle:focus-visible {
+  outline: 2px solid var(--flare);
+  outline-offset: -1px;
+}
+
+/* Pressed state is carried by border, weight and icon colour — never colour alone. */
+.toggle[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--thermal) 55%, transparent);
+  background: color-mix(in srgb, var(--thermal) 14%, transparent);
+  font-weight: 600;
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  color: var(--muted);
+}
+
+.icon[data-state="on"] {
+  color: var(--thermal);
+}
+
+.icon[data-state="error"] {
+  color: var(--flare);
+}
+
+.icon[data-state="loading"] {
+  color: var(--frost);
+  animation: pulse 1.1s ease-in-out infinite;
+}
+
+.title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.marker {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.marker[data-state="error"] {
+  background: var(--flare);
+  color: var(--ink);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon[data-state="loading"] {
+    animation: none;
+    opacity: 0.6;
+  }
+  .handle > * {
+    transition: none;
+  }
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.legendToggle {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 26px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.legendToggle:hover {
+  color: var(--thermal);
+  background: color-mix(in srgb, var(--frost) 8%, transparent);
+}
+
+.chevron {
+  transform: rotate(-90deg);
+  transition: transform 140ms ease;
+}
+
+.chevron[data-open] {
+  transform: rotate(0deg);
+}
+
+/* The legend belongs to the row above it, so it is indented under the title. */
+.legend {
+  grid-column: 1 / -1;
+  padding: 6px 10px 10px 34px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
+}
+
+/* Configuration page: the grip is always on show, rows carry no on/off state. */
+.stack[data-mode="edit"] .index {
+  display: none;
+}
+
+.stack[data-mode="edit"] .grip {
+  opacity: 1;
+}
+
+.static {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  min-height: 40px;
+  padding: 6px 10px;
+  color: var(--frost);
+  font-size: 0.82rem;
+}
+
+.remove {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  min-height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.remove:hover {
+  color: var(--flare);
+  background: color-mix(in srgb, var(--flare) 14%, transparent);
+}
+
+.remove:focus-visible {
+  outline: 2px solid var(--flare);
+  outline-offset: -1px;
+}
+
+.extra {
+  grid-column: 1 / -1;
+}
+
+/* Title over the source address, both truncated rather than wrapped. */
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.source {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+a.source:hover {
+  color: var(--thermal);
+  text-decoration: underline;
+}
+
+a.source:focus-visible {
+  outline: 2px solid var(--flare);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Grip, details, settings toggle, remove. */
+.stack[data-mode="edit"] .row {
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+}

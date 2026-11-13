@@ -12,6 +12,19 @@
   color-scheme: dark;
 }
 
+/* Same tokens, light values. Every component reads tokens, so this is the whole theme. */
+:root[data-theme="light"] {
+  --ink: #f4f6fb;
+  --ink-2: #e6eaf3;
+  --frost: #0b1020;
+  --thermal: #c2410c;
+  --flare: #b45309;
+  --surface: #ffffff;
+  --line: #d3d9e6;
+  --muted: #4a5368;
+  color-scheme: light;
+}
+
 * {
   box-sizing: border-box;
 }

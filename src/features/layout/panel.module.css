@@ -1,0 +1,28 @@
+.toggle {
+  display: grid;
+  place-items: center;
+  flex: none;
+  /* Comfortable target without crowding the wordmark beside it. */
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--frost);
+  cursor: pointer;
+}
+
+.toggle:hover {
+  border-color: var(--thermal);
+  color: var(--thermal);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--flare);
+  outline-offset: 2px;
+}
+
+.toggle[aria-expanded="true"] {
+  border-color: color-mix(in srgb, var(--thermal) 55%, var(--line));
+  color: var(--thermal);
+}

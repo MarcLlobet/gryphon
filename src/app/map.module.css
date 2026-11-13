@@ -1,0 +1,16 @@
+/* Header across the top; panel and map share the row beneath it.
+   `dvh`/`dvw` so a mobile browser's collapsing toolbar does not crop the layout. */
+.shell {
+  display: flex;
+  flex-direction: column;
+  width: 100dvw;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.header {
+  flex: none;
+  z-index: 5;
+  padding: 10px 16px;
+  background: var(--ink);
+}
